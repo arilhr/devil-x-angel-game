@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [Header("Reference")]
     public PlayerMovement playerMove;
+    public Animator characterAnim;
 
     [Header("Properties")]
     public float speed;
@@ -25,6 +26,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         InputPlayer();
+        OnLand();
     }
 
     private void FixedUpdate()
@@ -37,9 +39,31 @@ public class Player : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
+        characterAnim.SetBool("Walk", horizontalInput != 0);
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             isJumping = true;
+            characterAnim.SetBool("Jump", isJumping);
         }
+
+        if (Input.GetKey(KeyCode.S))
+        {
+            isCrouch = true;
+        }
+        else
+        {
+            isCrouch = false;
+        }
+    }
+
+    public void OnLand()
+    {
+        characterAnim.SetBool("Jump", !playerMove.GetGrounded());
+    }
+
+    public void OnCrouch(bool isCrouching)
+    {
+        characterAnim.SetBool("Crouch", isCrouching);
     }
 }
