@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
 
     [Header("Properties")]
     public float speed;
+    public Transform respawnPos;
 
     private float horizontalInput;
     private bool isCrouch;
@@ -18,6 +19,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.instance.OnPlayerDie.AddListener(() => Respawn());
+
         isCrouch = false;
         isJumping = false;
     }
@@ -65,5 +68,20 @@ public class Player : MonoBehaviour
     public void OnCrouch(bool isCrouching)
     {
         characterAnim.SetBool("Crouch", isCrouching);
+    }
+
+    public void Respawn()
+    {
+        transform.position = respawnPos.position;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (GameManager.instance == null) return;
+
+        if (collision.tag == "Obstacle")
+        {
+            GameManager.instance.PlayerDie();
+        }
     }
 }
