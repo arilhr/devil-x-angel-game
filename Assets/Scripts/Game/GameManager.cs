@@ -9,10 +9,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    [Header("References")]
+    public Player chara1;
+    public Player chara2;
+
     [Header("Level Properties")]
+    public int levelId;
     public float gameTime;
     private float currentGameTime;
 
+    [HideInInspector] public bool isPlaying;
     [HideInInspector] public UnityEvent OnPlayerDie = new UnityEvent();
 
     private void Awake()
@@ -31,16 +37,20 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         currentGameTime = gameTime;
+        isPlaying = true;
     }
 
     // Update is called once per frame
     void Update()
     {
         CountTime();
+        CheckWin();
     }
 
     void CountTime()
     {
+        if (!isPlaying) return;
+
         if (currentGameTime >= 0)
         {
             currentGameTime -= Time.deltaTime;
@@ -65,14 +75,32 @@ public class GameManager : MonoBehaviour
         OnPlayerDie?.Invoke();
     }
 
+    private void CheckWin()
+    {
+        if (chara1.isFinished && chara2.isFinished)
+        {
+            GameWin();
+        }
+    }
+
     public void GameWin()
     {
         UIManager.instance.SetWinUI();
+        isPlaying = false;
+
+        // set data
+        LevelManager.instance.SetLevelData(levelId, true, true);
+        
+        if (LevelManager.instance.levels.Count - 1 > levelId)
+        {
+            LevelManager.instance.SetLevelData(levelId + 1, true);
+        }
     }
 
     public void GameLose()
     {
         UIManager.instance.SetLoseUI();
+        isPlaying = false;
     }
 }
 

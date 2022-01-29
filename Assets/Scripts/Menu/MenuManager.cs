@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,12 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
+    [Serializable]
+    public struct LevelButton
+    {
+        public GameObject openButton;
+        public GameObject lockButton;
+    }
 
     [Header("Help Page")]
     public GameObject helpObj;
@@ -17,6 +24,14 @@ public class MenuManager : MonoBehaviour
     [Header("Play Page")]
     public Animator playAnim;
     public GameObject playObj;
+    public List<LevelButton> levelButtons;
+
+
+    private void Start()
+    {
+        LevelManager.instance.LoadData();
+        SetLevelButton();
+    }
 
     #region Help Page
     public void ShowHelpPage()
@@ -78,6 +93,18 @@ public class MenuManager : MonoBehaviour
         yield return new WaitForSeconds(playAnim.GetCurrentAnimatorStateInfo(0).length);
 
         playObj.SetActive(false);
+    }
+
+    private void SetLevelButton()
+    {
+        for (int i = 0; i < LevelManager.instance.levels.Count; i++)
+        {
+            bool isOpen = LevelManager.instance.levels[i].isOpen;
+            string sceneName = LevelManager.instance.levels[i].sceneName;
+            levelButtons[i].openButton.SetActive(isOpen);
+            levelButtons[i].lockButton.SetActive(!isOpen);
+            levelButtons[i].openButton.GetComponent<Button>().onClick.AddListener(() => SceneChanger.instance.LoadScene(sceneName));
+        }
     }
     #endregion
 }

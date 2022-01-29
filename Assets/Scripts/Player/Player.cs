@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     private bool isCrouch;
     private bool isJumping;
 
+    public bool isFinished { get; private set; }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +30,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameManager.instance.isPlaying) return;
+
         InputPlayer();
     }
 
@@ -85,6 +89,22 @@ public class Player : MonoBehaviour
         if (collision.tag == "Obstacle")
         {
             GameManager.instance.PlayerDie();
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Finish")
+        {
+            isFinished = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Finish")
+        {
+            isFinished = false;
         }
     }
 }
