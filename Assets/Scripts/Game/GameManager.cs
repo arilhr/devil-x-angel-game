@@ -104,6 +104,7 @@ public class GameManager : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(GameManager))]
 public class GameManagerInspector : Editor
 {
@@ -123,3 +124,4 @@ public class GameManagerInspector : Editor
         }
     }
 }
+#endif

@@ -78,6 +78,7 @@ public class LevelManager : MonoBehaviour
     } 
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(LevelManager))]
 public class LevelManagerInspector : Editor
 {
@@ -103,3 +104,4 @@ public class LevelManagerInspector : Editor
         }
     }
 }
+#endif

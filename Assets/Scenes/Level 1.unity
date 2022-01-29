@@ -1828,6 +1828,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Devil Character
       objectReference: {fileID: 0}
+    - target: {fileID: 6388822632940279192, guid: 7b9a0717c9beb794390e50027c97708d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6388822632940279193, guid: 7b9a0717c9beb794390e50027c97708d, type: 3}
       propertyPath: respawnPos
       value: 
