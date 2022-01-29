@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
-    [Header("Animator")]
-    
-    public Animator mainMenuAnim;
 
     [Header("Help Page")]
     public GameObject helpObj;
@@ -16,6 +13,10 @@ public class MenuManager : MonoBehaviour
 
     [Header("Credit Page")]
     public Animator creditAnim;
+
+    [Header("Play Page")]
+    public Animator playAnim;
+    public GameObject playObj;
 
     #region Help Page
     public void ShowHelpPage()
@@ -38,7 +39,6 @@ public class MenuManager : MonoBehaviour
     {
         helpAnim.SetTrigger("Hide");
 
-        Debug.Log($"{helpAnim.GetCurrentAnimatorStateInfo(0).length}");
         yield return new WaitForSeconds(helpAnim.GetCurrentAnimatorStateInfo(0).length);
 
         Debug.Log($"inactive");
@@ -57,5 +57,27 @@ public class MenuManager : MonoBehaviour
         creditAnim.SetTrigger("Hide");
     }
 
+    #endregion
+
+    #region Play Page
+    public void ShowPlayPage()
+    {
+        playObj.SetActive(true);
+        playAnim.SetTrigger("Show");
+    }
+
+    public void HidePlayPage()
+    {
+        StartCoroutine(OnHidePlayPage());
+    }
+
+    private IEnumerator OnHidePlayPage()
+    {
+        playAnim.SetTrigger("Hide");
+
+        yield return new WaitForSeconds(playAnim.GetCurrentAnimatorStateInfo(0).length);
+
+        playObj.SetActive(false);
+    }
     #endregion
 }

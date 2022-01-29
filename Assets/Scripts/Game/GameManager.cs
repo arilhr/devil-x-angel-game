@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,9 +12,6 @@ public class GameManager : MonoBehaviour
     [Header("Level Properties")]
     public float gameTime;
     private float currentGameTime;
-
-    [Header("References")]
-    public TMP_Text timerText;
 
     [HideInInspector] public UnityEvent OnPlayerDie = new UnityEvent();
 
@@ -47,7 +44,13 @@ public class GameManager : MonoBehaviour
         if (currentGameTime >= 0)
         {
             currentGameTime -= Time.deltaTime;
-            timerText.text = ConvertFloatToTimeSpan(currentGameTime);
+            UIManager.instance.timerText.text = ConvertFloatToTimeSpan(currentGameTime);
+        }
+
+        if (currentGameTime <= 0)
+        {
+            currentGameTime = 0;
+            GameLose();
         }
     }
 
@@ -60,5 +63,35 @@ public class GameManager : MonoBehaviour
     public void PlayerDie()
     {
         OnPlayerDie?.Invoke();
+    }
+
+    public void GameWin()
+    {
+        UIManager.instance.SetWinUI();
+    }
+
+    public void GameLose()
+    {
+        UIManager.instance.SetLoseUI();
+    }
+}
+
+[CustomEditor(typeof(GameManager))]
+public class GameManagerInspector : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+
+        GameManager game = (GameManager)target;
+        if (GUILayout.Button("Test Win"))
+        {
+            game.GameWin();
+        }
+
+        if (GUILayout.Button("Test Lose"))
+        {
+            game.GameLose();
+        }
     }
 }

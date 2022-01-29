@@ -29,7 +29,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         InputPlayer();
-        OnLand();
     }
 
     private void FixedUpdate()
@@ -47,7 +46,6 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             isJumping = true;
-            characterAnim.SetBool("Jump", isJumping);
         }
 
         if (Input.GetKey(KeyCode.S))
@@ -60,9 +58,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void OnJump()
+    {
+        characterAnim.SetBool("Jump", true);
+    }
+
     public void OnLand()
     {
-        characterAnim.SetBool("Jump", !playerMove.GetGrounded());
+        characterAnim.SetBool("Jump", false);
     }
 
     public void OnCrouch(bool isCrouching)

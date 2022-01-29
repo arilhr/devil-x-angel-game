@@ -14,9 +14,9 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
 	[SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
 
-	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
+	public float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
 	private bool m_Grounded;            // Whether or not the player is grounded.
-	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
+	public float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
 	private Rigidbody2D m_Rigidbody2D;
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
 	[Header("Events")]
 	[Space]
 
+	public UnityEvent OnJumpEvent;
 	public UnityEvent OnLandEvent;
 
 	[System.Serializable]
@@ -36,6 +37,9 @@ public class PlayerMovement : MonoBehaviour
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 
+		if (OnJumpEvent == null)
+			OnJumpEvent = new UnityEvent();
+
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
 
@@ -43,8 +47,13 @@ public class PlayerMovement : MonoBehaviour
 			OnCrouchEvent = new BoolEvent();
 	}
 
-	private void FixedUpdate()
-	{
+    private void Update()
+    {
+		CheckGrounded();
+    }
+
+	private void CheckGrounded()
+    {
 		bool wasGrounded = m_Grounded;
 		m_Grounded = false;
 
@@ -57,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
 			{
 				m_Grounded = true;
 				if (!wasGrounded)
-                {
+				{
 					OnLandEvent.Invoke();
 				}
 			}
@@ -74,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
 			if (Physics2D.OverlapCircle(m_CeilingCheck.position, k_CeilingRadius, m_WhatIsGround))
 			{
 				crouch = true;
+				jump = false;
 			}
 		}
 
@@ -134,6 +144,7 @@ public class PlayerMovement : MonoBehaviour
 			// Add a vertical force to the player.
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			OnJumpEvent?.Invoke();
 		}
 	}
 
